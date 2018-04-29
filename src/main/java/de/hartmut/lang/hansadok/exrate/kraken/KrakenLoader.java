@@ -14,8 +14,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.annotation.PostConstruct;
 import java.net.URI;
-import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.Date;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.regex.Matcher;
@@ -77,7 +77,7 @@ public class KrakenLoader implements Runnable {
         if (matcher.find()) {
             Ticker ticker = new Ticker();
             ticker.setPairName(pair);
-            ticker.setTimestamp(Timestamp.from(Instant.now()));
+            ticker.setTimestamp(Date.from(Instant.now()));
             ticker.setAverageToday(Decimal128.parse(matcher.group(1)));
             ticker.setAverage24h(Decimal128.parse(matcher.group(2)));
             tickerRepository.save(ticker);

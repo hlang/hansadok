@@ -4,7 +4,8 @@ import org.bson.types.Decimal128;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.sql.Timestamp;
+import java.util.Date;
+
 
 /**
  * hartmut on 28.04.18.
@@ -14,7 +15,7 @@ public class Ticker {
     @Id
     private String id;
 
-    private Timestamp timestamp;
+    private Date timestamp;
     private String pairName;
     private Decimal128 averageToday;
     private Decimal128 average24h;
@@ -27,11 +28,11 @@ public class Ticker {
         this.id = id;
     }
 
-    public Timestamp getTimestamp() {
+    public Date getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Timestamp timestamp) {
+    public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
 
