@@ -1,10 +1,11 @@
 package de.hartmut.lang.hansadok.db.exrate;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import org.bson.types.Decimal128;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Date;
+import java.time.Instant;
 
 
 /**
@@ -15,7 +16,7 @@ public class Ticker {
     @Id
     private String id;
 
-    private Date timestamp;
+    private Instant timestamp;
     private String pairName;
     private Decimal128 averageToday;
     private Decimal128 average24h;
@@ -28,11 +29,11 @@ public class Ticker {
         this.id = id;
     }
 
-    public Date getTimestamp() {
+    public Instant getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Date timestamp) {
+    public void setTimestamp(Instant timestamp) {
         this.timestamp = timestamp;
     }
 
@@ -52,12 +53,22 @@ public class Ticker {
         this.averageToday = averageToday;
     }
 
+    @JsonGetter("averageToday")
+    public String getAverageTodayStr() {
+        return averageToday.toString();
+    }
+
     public Decimal128 getAverage24h() {
         return average24h;
     }
 
     public void setAverage24h(Decimal128 average24h) {
         this.average24h = average24h;
+    }
+
+    @JsonGetter("average24h")
+    public String getAverage24hStr() {
+        return average24h.toString();
     }
 
     @Override
