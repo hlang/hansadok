@@ -1,0 +1,26 @@
+<div>
+    <p-multiSelect [options]="pairs" [(ngModel)]="selectedPairs"></p-multiSelect>
+</div>
+<div>
+    <p-table [value]="tickerResult.tickerInfos">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>PairName</th>
+                <th>Average Today</th>
+                <th>Average 24h</th>
+                <th></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-ticker>
+            <tr>
+                <td>{{ticker.pairName}}</td>
+                <td>{{ticker.averageToday}}</td>
+                <td>{{ticker.average24h}}</td>
+                <td>{{ticker.timestamp | date:'dd.MM.y HH:mm:ss'}}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+    <p-paginator [rows]="tickerResult.size"
+                 [totalRecords]="tickerResult.totalElements"
+                 (onPageChange)="paginate($event)"></p-paginator>
+</div>
