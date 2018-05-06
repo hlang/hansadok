@@ -1,5 +1,7 @@
 <div>
-    <p-multiSelect [options]="pairs" [(ngModel)]="selectedPairs"></p-multiSelect>
+    <p-multiSelect [options]="pairs" [(ngModel)]="selectedPairs"
+            (onChange)="tickerPairsChanged($event)">
+    </p-multiSelect>
 </div>
 <div>
     <p-table [value]="tickerResult.tickerInfos">
@@ -12,7 +14,7 @@
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-ticker>
-            <tr>
+            <tr class="row-text">
                 <td>{{ticker.pairName}}</td>
                 <td>{{ticker.averageToday}}</td>
                 <td>{{ticker.average24h}}</td>

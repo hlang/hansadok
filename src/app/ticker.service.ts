@@ -38,6 +38,22 @@ export class TickerService {
 
     }
 
+    getFilteredTickers(pageNum: number, pairNames: string[]): Observable<TickerInfoResult> {
+        let params = new HttpParams()
+            .set('sort', 'timestamp,DESC')
+            .set('pairNames', pairNames.join(','))
+            .set('page', String(pageNum));
+
+        return this.http.get("tickers/search/findByPairNameIn", {
+            params: params
+        }).map(res => TickerService.extractData(res));
+    }
+
+    getTickerPairs() : Observable<string[]> {
+        return this.http.get("tickerctrl/pairs")
+            .map(res => <string[]>res);
+    }
+
     private static extractData(response: Object): TickerInfoResult {
         let searchResult: TickerInfoResult;
         if (response['_embedded']) {

@@ -13,7 +13,8 @@ export class TickerComponent implements OnInit {
         {label: 'ETHEUR', value: 'ETHEUR'},
         {label: 'XBTEUR', value: 'XBTEUR'}
     ];
-    selectedPairs: String[];
+    selectedPairs: string[] =
+                ['XBTEUR', 'ETHEUR'];
     tickerResult: TickerInfoResult;
 
     constructor(private tickerService: TickerService) {
@@ -24,9 +25,21 @@ export class TickerComponent implements OnInit {
     }
 
     private getTickerInfo(pageNum: number) {
-        this.tickerService.getTickerInfos(pageNum)
+        this.tickerService.getFilteredTickers(pageNum, this.selectedPairs)
             .subscribe(result => this.tickerResult = result);
 
+    }
+
+    private getPairs() {
+
+        this.tickerService.getTickerPairs()
+            .subscribe(pairs => {
+                let pairsRead: SelectItem[];
+                pairs.forEach(pair=> {
+                    pairsRead.push({ label: pair, value: pair })
+                });
+                this.pairs = pairsRead;
+            });
     }
 
     paginate(event) {
@@ -35,5 +48,9 @@ export class TickerComponent implements OnInit {
         //event.page = Index of the new page
         //event.pageCount = Total number of pages
         this.getTickerInfo(event.page);
+    }
+
+    tickerPairsChanged(event) {
+        this.getTickerInfo(0);
     }
 }
