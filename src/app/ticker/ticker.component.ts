@@ -9,19 +9,17 @@ import {SelectItem} from 'primeng/api';
 })
 export class TickerComponent implements OnInit {
 
-    pairs: SelectItem[] = [
-        {label: 'ETHEUR', value: 'ETHEUR'},
-        {label: 'XBTEUR', value: 'XBTEUR'}
-    ];
-    selectedPairs: string[] =
-                ['XBTEUR', 'ETHEUR'];
-    tickerResult: TickerInfoResult;
+    pairs: SelectItem[] = [];
+    selectedPairs: string[] = [];
+    tickerResult: TickerInfoResult = {
+        totalElements: 0
+    };
 
     constructor(private tickerService: TickerService) {
     }
 
     ngOnInit() {
-        this.getTickerInfo(0);
+        this.getPairs();
     }
 
     private getTickerInfo(pageNum: number) {
@@ -34,11 +32,8 @@ export class TickerComponent implements OnInit {
 
         this.tickerService.getTickerPairs()
             .subscribe(pairs => {
-                let pairsRead: SelectItem[];
-                pairs.forEach(pair=> {
-                    pairsRead.push({ label: pair, value: pair })
-                });
-                this.pairs = pairsRead;
+                this.processPairs(pairs);
+                this.getTickerInfo(0);
             });
     }
 
@@ -52,5 +47,16 @@ export class TickerComponent implements OnInit {
 
     tickerPairsChanged(event) {
         this.getTickerInfo(0);
+    }
+
+    private processPairs(tickerPairs: string[]) {
+        let pairsRead: SelectItem[] = [];
+        let selPairs: string[] = [];
+        tickerPairs.forEach(pair => {
+            pairsRead.push({label: pair, value: pair});
+            selPairs.push(pair)
+        });
+        this.pairs = pairsRead;
+        this.selectedPairs = selPairs;
     }
 }

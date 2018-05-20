@@ -27,20 +27,9 @@ export class TickerService {
     }
 
 
-    getTickerInfos(pageNum: number): Observable<TickerInfoResult> {
+    getFilteredTickers(pageNum: number, pairNames: string[], sort = "timestamp,DESC"): Observable<TickerInfoResult> {
         let params = new HttpParams()
-            .set('sort', 'timestamp,DESC')
-            .set('page', String(pageNum));
-
-        return this.http.get("tickers", {
-            params: params
-        }).map(res => TickerService.extractData(res));
-
-    }
-
-    getFilteredTickers(pageNum: number, pairNames: string[]): Observable<TickerInfoResult> {
-        let params = new HttpParams()
-            .set('sort', 'timestamp,DESC')
+            .set('sort', sort)
             .set('pairNames', pairNames.join(','))
             .set('page', String(pageNum));
 
