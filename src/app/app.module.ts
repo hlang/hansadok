@@ -12,13 +12,16 @@ import {TickerService} from "./ticker.service";
 import {TickerComponent} from './ticker/ticker.component';
 import {TchartComponent} from './tchart/tchart.component';
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {TselectComponent} from './tselect/tselect.component';
+import {TselectService} from "./tselect.service";
 
 
 @NgModule({
     declarations: [
         AppComponent,
         TickerComponent,
-        TchartComponent
+        TchartComponent,
+        TselectComponent
     ],
     imports: [
         BrowserModule,
@@ -31,7 +34,8 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
         ChartModule
     ],
     providers: [
-        TickerService
+        TickerService,
+        TselectService
     ],
     bootstrap: [AppComponent]
 })

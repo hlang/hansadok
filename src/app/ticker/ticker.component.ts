@@ -1,25 +1,37 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {TickerInfoResult, TickerService} from "../ticker.service";
-import {SelectItem} from 'primeng/api';
+import {TselectService} from "../tselect.service";
+import {Subscription} from "rxjs/Subscription";
 
 @Component({
     selector: 'app-ticker',
     templateUrl: './ticker.component.html',
     styleUrls: ['./ticker.component.css']
 })
-export class TickerComponent implements OnInit {
+export class TickerComponent implements OnInit, OnDestroy {
 
-    pairs: SelectItem[] = [];
     selectedPairs: string[] = [];
+    subscription: Subscription;
     tickerResult: TickerInfoResult = {
         totalElements: 0
     };
 
-    constructor(private tickerService: TickerService) {
+    constructor(private tickerService: TickerService,
+                private selectService: TselectService) {
     }
 
     ngOnInit() {
-        this.getPairs();
+        this.subscription = this.selectService.selectedPairs$.subscribe(
+            pairs => {
+                this.selectedPairs = pairs;
+                this.getTickerInfo(0)
+            }
+        );
+
+    }
+
+    ngOnDestroy() {
+        this.subscription.unsubscribe();
     }
 
     private getTickerInfo(pageNum: number) {
@@ -28,35 +40,11 @@ export class TickerComponent implements OnInit {
 
     }
 
-    private getPairs() {
-
-        this.tickerService.getTickerPairs()
-            .subscribe(pairs => {
-                this.processPairs(pairs);
-                this.getTickerInfo(0);
-            });
-    }
-
     paginate(event) {
         //event.first = Index of the first record
         //event.rows = Number of rows to display in new page
         //event.page = Index of the new page
         //event.pageCount = Total number of pages
         this.getTickerInfo(event.page);
-    }
-
-    tickerPairsChanged(event) {
-        this.getTickerInfo(0);
-    }
-
-    private processPairs(tickerPairs: string[]) {
-        let pairsRead: SelectItem[] = [];
-        let selPairs: string[] = [];
-        tickerPairs.forEach(pair => {
-            pairsRead.push({label: pair, value: pair});
-            selPairs.push(pair)
-        });
-        this.pairs = pairsRead;
-        this.selectedPairs = selPairs;
     }
 }

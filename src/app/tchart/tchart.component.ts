@@ -1,18 +1,19 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {TickerInfoResult, TickerService} from "../ticker.service";
 import {DatePipe} from "@angular/common";
+import {TselectService} from "../tselect.service";
+import {Subscription} from "rxjs/Subscription";
 
 @Component({
     selector: 'app-tchart',
     templateUrl: './tchart.component.html',
     styleUrls: ['./tchart.component.css']
 })
-export class TchartComponent implements OnInit {
+export class TchartComponent implements OnInit, OnDestroy {
     data: any;
     options: any;
     datePipe = new DatePipe('en');
-    selectedPairs: string[] =
-        ['XBTEUR', 'ETHEUR'];
+    subscription: Subscription;
     borderColors = [
         '#4bc0c0',
         '#565656',
@@ -22,7 +23,8 @@ export class TchartComponent implements OnInit {
         "#FFCE56"];
     borderColorIndex = 0;
 
-    constructor(private tickerService: TickerService) {
+    constructor(private tickerService: TickerService,
+                private selectService: TselectService) {
         this.data = {};
 
         this.options = {
@@ -33,24 +35,32 @@ export class TchartComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.getTickerData();
+        this.subscription = this.selectService.selectedPairs$.subscribe(
+            pairs => {
+                this.getTickerData(pairs)
+            }
+        )
     }
 
-    private getTickerData() {
-        this.tickerService.getFilteredTickers(0, this.selectedPairs)
-            .subscribe(result => this.processResult(result));
+    ngOnDestroy() {
+        this.subscription.unsubscribe();
+    }
+
+    private getTickerData(pairs: string[]) {
+        this.tickerService.getFilteredTickers(0, pairs)
+            .subscribe(result => this.processResult(result, pairs));
 
     }
 
-    private processResult(result: TickerInfoResult) {
+    private processResult(result: TickerInfoResult, pairs: string[]) {
         let datasets: any[] = [];
 
-        this.selectedPairs.forEach(
+        pairs.forEach(
             tickerName =>
                 datasets.push(this.getDataSet(result, tickerName))
         );
         this.data = {
-            labels: this.getLabels(result, this.selectedPairs[0]),
+            labels: this.getLabels(result, pairs[0]),
             datasets: datasets
         }
     }
